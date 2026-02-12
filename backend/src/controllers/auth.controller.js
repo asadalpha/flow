@@ -3,24 +3,42 @@ import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/AppError.js';
 
 export const register = catchAsync(async (req, res, next) => {
-  const { user, token } = await authService.signup(req.body);
-
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: { user },
-  });
+  try {
+    console.log('Registration attempt:', { email: req.body.email, name: req.body.name });
+    
+    const { user, token } = await authService.signup(req.body);
+    
+    console.log('Registration successful:', user.email);
+    
+    res.status(201).json({
+      status: 'success',
+      token,
+      data: { user },
+    });
+  } catch (error) {
+    console.error('Registration error:', error.message);
+    throw error;
+  }
 });
 
 export const login = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
-  const { user, token } = await authService.login(email, password);
-
-  res.status(200).json({
-    status: 'success',
-    token,
-    data: { user },
-  });
+  try {
+    console.log('Login attempt:', { email: req.body.email });
+    
+    const { email, password } = req.body;
+    const { user, token } = await authService.login(email, password);
+    
+    console.log('Login successful:', user.email);
+    
+    res.status(200).json({
+      status: 'success',
+      token,
+      data: { user },
+    });
+  } catch (error) {
+    console.error('Login error:', error.message);
+    throw error;
+  }
 });
 
 export const googleCallback = catchAsync(async (req, res, next) => {

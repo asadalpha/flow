@@ -47,11 +47,11 @@ app.use(
       if (!origin) {
         return callback(null, true);
       }
-      
+
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-      
+
       // Log rejected origins for debugging
       console.warn(`CORS blocked origin: ${origin}`);
       return callback(new Error(`Not allowed by CORS: ${origin}`));

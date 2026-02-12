@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { APP_TAGLINE, APP_DESCRIPTION } from '../../../utils/constants';
+
 
 const fadeUpVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -69,7 +69,7 @@ export function HeroSection() {
                     <Link to="/register">
                         <button className="group relative px-6 py-3 bg-white text-black font-medium text-sm rounded-lg hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all duration-300 overflow-hidden">
                             <span className="relative z-10">Start Tracking</span>
-                            <div className="absolute inset-0 bg-gradient-to-tr from-gray-100 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <div className="absolute inset-0 bg-linear-to-tr from-gray-100 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </button>
                     </Link>
                     <a

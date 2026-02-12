@@ -21,30 +21,46 @@ if (process.env.NODE_ENV === "development") {
 }
 app.use(express.json({ limit: "10kb" }));
 app.use(cookieParser());
+
+// CORS Configuration
 const defaultOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:5175",
+  "https://flow-app-weld-seven.vercel.app",
 ];
+
 const envOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(",")
       .map((origin) => origin.trim())
       .filter(Boolean)
   : [];
+
 const allowedOrigins = [...new Set([...envOrigins, ...defaultOrigins])];
+
+console.log("Allowed CORS origins:", allowedOrigins);
 
 app.use(
   cors({
     origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, Postman, curl, etc.)
       if (!origin) {
         return callback(null, true);
       }
+      
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-      return callback(new Error("Not allowed by CORS"));
+      
+      // Log rejected origins for debugging
+      console.warn(`CORS blocked origin: ${origin}`);
+      return callback(new Error(`Not allowed by CORS: ${origin}`));
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Content-Range", "X-Content-Range"],
+    maxAge: 600, // 10 minutes
   }),
 );
 

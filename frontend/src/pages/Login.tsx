@@ -85,7 +85,7 @@ export default function Login() {
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/v1/auth/google`;
+        window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/google`;
     };
 
     return (

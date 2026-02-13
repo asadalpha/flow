@@ -1,6 +1,33 @@
+import mongoose from "mongoose";
 import Job from "../models/Job.js";
 import catchAsync from "../utils/catchAsync.js";
 import AppError from "../utils/AppError.js";
+
+const allowedStatuses = new Set([
+  "Not Applied",
+  "Applied",
+  "Ghosted",
+  "Rejected",
+  "Interview",
+  "Offer",
+]);
+
+const validateObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
+const pickAllowedFields = (body) => {
+  const allowed = [
+    "company",
+    "role",
+    "description",
+    "applicationLink",
+    "status",
+    "notes",
+    "dateApplied",
+  ];
+  return Object.fromEntries(
+    Object.entries(body).filter(([key]) => allowed.includes(key))
+  );
+};
 
 export const getAllJobs = catchAsync(async (req, res, next) => {
   // Filter by user and optional query params (status, etc.)
@@ -17,9 +44,20 @@ export const getAllJobs = catchAsync(async (req, res, next) => {
 });
 
 export const createJob = catchAsync(async (req, res, next) => {
-  if (!req.body.user) req.body.user = req.user.id;
+  // Enforce user from auth to prevent IDOR
+  const payload = pickAllowedFields(req.body);
 
-  const newJob = await Job.create(req.body);
+  if (!payload.company || !payload.role) {
+    return next(new AppError("Company and role are required", 400));
+  }
+
+  if (payload.status && !allowedStatuses.has(payload.status)) {
+    return next(new AppError("Invalid status value", 400));
+  }
+
+  payload.user = req.user.id;
+
+  const newJob = await Job.create(payload);
 
   res.status(201).json({
     status: "success",
@@ -28,9 +66,19 @@ export const createJob = catchAsync(async (req, res, next) => {
 });
 
 export const updateJob = catchAsync(async (req, res, next) => {
+  if (!validateObjectId(req.params.id)) {
+    return next(new AppError("Invalid job id", 400));
+  }
+
+  const payload = pickAllowedFields(req.body);
+
+  if (payload.status && !allowedStatuses.has(payload.status)) {
+    return next(new AppError("Invalid status value", 400));
+  }
+
   const job = await Job.findOneAndUpdate(
     { _id: req.params.id, user: req.user.id },
-    req.body,
+    payload,
     {
       new: true,
       runValidators: true,
@@ -48,6 +96,10 @@ export const updateJob = catchAsync(async (req, res, next) => {
 });
 
 export const deleteJob = catchAsync(async (req, res, next) => {
+  if (!validateObjectId(req.params.id)) {
+    return next(new AppError("Invalid job id", 400));
+  }
+
   const job = await Job.findOneAndDelete({
     _id: req.params.id,
     user: req.user.id,

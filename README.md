@@ -14,6 +14,7 @@ A modern job application tracking system with AI-powered resume analysis and Goo
 ## Tech Stack
 
 ### Frontend
+
 - React + TypeScript
 - Vite
 - TanStack Query (React Query)
@@ -24,6 +25,7 @@ A modern job application tracking system with AI-powered resume analysis and Goo
 - Zod (validation)
 
 ### Backend
+
 - Node.js + Express
 - MongoDB + Mongoose
 - Passport.js (Google OAuth)
@@ -35,12 +37,14 @@ A modern job application tracking system with AI-powered resume analysis and Goo
 ## Setup Instructions
 
 ### Prerequisites
+
 - Node.js (v18 or higher)
 - MongoDB (local or Atlas)
 - Google Cloud Console account (for OAuth)
 - Google AI Studio account (for Gemini API)
 
 ### 1. Clone the Repository
+
 ```bash
 git clone <your-repo-url>
 cd flow
@@ -54,8 +58,9 @@ npm install
 ```
 
 Create a `.env` file in the backend directory:
+
 ```env
-MONGODB_URI=your_mongodb_connection_string
+MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key_here
 JWT_EXPIRES_IN=90d
 SESSION_SECRET=your_session_secret_key_here
@@ -63,7 +68,7 @@ SESSION_SECRET=your_session_secret_key_here
 # Google OAuth
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_CALLBACK_URL=http://localhost:5000/api/v1/auth/google/callback
+GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/google/callback
 
 # Frontend URL
 FRONTEND_URL=http://localhost:5173
@@ -84,8 +89,9 @@ npm install
 ```
 
 Create a `.env` file in the frontend directory:
+
 ```env
-VITE_API_URL=http://localhost:5000
+VITE_API_URL=http://localhost:5000/api
 ```
 
 ### 4. Google OAuth Setup
@@ -96,7 +102,8 @@ VITE_API_URL=http://localhost:5000
 4. Go to "Credentials" → "Create Credentials" → "OAuth 2.0 Client ID"
 5. Configure OAuth consent screen
 6. Add authorized redirect URIs:
-   - `http://localhost:5000/api/v1/auth/google/callback`
+   - Development: `http://localhost:5000/api/auth/google/callback`
+   - Production (Render): `https://flow-7mhj.onrender.com/api/auth/google/callback`
 7. Copy the Client ID and Client Secret to your backend `.env` file
 
 ### 5. Get Gemini API Key
@@ -108,29 +115,34 @@ VITE_API_URL=http://localhost:5000
 ### 6. Start the Application
 
 **Terminal 1 - Backend:**
+
 ```bash
 cd backend
 npm run dev
 ```
 
 **Terminal 2 - Frontend:**
+
 ```bash
 cd frontend
 npm run dev
 ```
 
 The application will be available at:
+
 - Frontend: http://localhost:5173
 - Backend: http://localhost:5000
 
 ## Features Guide
 
 ### Authentication
+
 - **Email/Password**: Traditional signup and login
 - **Google OAuth**: One-click sign-in with Google account
 - Clear error messages and success notifications
 
 ### Job Tracking
+
 - Add job applications with company, role, status, and notes
 - Track application status (Not Applied, Applied, Interview, Offer, Rejected, Ghosted)
 - View statistics dashboard
@@ -138,6 +150,7 @@ The application will be available at:
 - Click on applications to view details
 
 ### Resume Analysis
+
 - Upload PDF resumes
 - Select job category
 - Get AI-powered analysis including:
@@ -147,6 +160,7 @@ The application will be available at:
   - Improvement suggestions
 
 ### User Experience
+
 - **Toast Notifications**: Clear feedback for all actions
   - Success messages (green)
   - Error messages (red)
@@ -159,36 +173,42 @@ The application will be available at:
 ## API Endpoints
 
 ### Authentication
-- `POST /api/v1/auth/signup` - Register new user
-- `POST /api/v1/auth/login` - Login with email/password
-- `GET /api/v1/auth/google` - Initiate Google OAuth
-- `GET /api/v1/auth/google/callback` - Google OAuth callback
+
+- `POST /api/auth/signup` - Register new user
+- `POST /api/auth/login` - Login with email/password
+- `GET /api/auth/google` - Initiate Google OAuth
+- `GET /api/auth/google/callback` - Google OAuth callback
 
 ### Jobs
-- `GET /api/v1/jobs` - Get all jobs
-- `POST /api/v1/jobs` - Create new job
-- `GET /api/v1/jobs/:id` - Get job by ID
-- `PATCH /api/v1/jobs/:id` - Update job
-- `DELETE /api/v1/jobs/:id` - Delete job
-- `GET /api/v1/jobs/stats` - Get job statistics
+
+- `GET /api/jobs` - Get all jobs
+- `POST /api/jobs` - Create new job
+- `GET /api/jobs/:id` - Get job by ID
+- `PATCH /api/jobs/:id` - Update job
+- `DELETE /api/jobs/:id` - Delete job
+- `GET /api/jobs/stats` - Get job statistics
 
 ### Resume
-- `POST /api/v1/resume/analyze` - Analyze resume (multipart/form-data)
-- `GET /api/v1/resume` - Get all analyses
+
+- `POST /api/resume/analyze` - Analyze resume (multipart/form-data)
+- `GET /api/resume` - Get all analyses
 
 ## Troubleshooting
 
 ### Google OAuth Issues
+
 - Ensure redirect URI matches exactly in Google Console
 - Check that GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are correct
 - Verify FRONTEND_URL is set correctly in backend .env
 
 ### Resume Analysis Issues
+
 - Ensure PDF file is valid and contains readable text
 - Check GEMINI_API_KEY is valid
 - Verify file size is under 10MB
 
 ### Database Connection
+
 - Ensure MongoDB is running
 - Check MONGODB_URI is correct
 - Verify network access if using MongoDB Atlas

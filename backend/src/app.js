@@ -102,18 +102,18 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.get("/api/v1/health", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.status(200).json({
     status: "healthy",
-    message: "API v1 is operational",
+    message: "API is operational",
     timestamp: new Date().toISOString(),
   });
 });
 
 // API Routes
-app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/jobs", jobRoutes);
-app.use("/api/v1/resume", resumeRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/jobs", jobRoutes);
+app.use("/api/resume", resumeRoutes);
 
 // Unhandled Routes (must be after all other routes)
 app.all("*", (req, res, next) => {
